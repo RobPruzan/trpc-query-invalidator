@@ -28,17 +28,18 @@ import { createBackendCaller } from "trpc-query-invalidator";
 export const withInvalidation = createInvalidator<typeof appRouter>();
 ```
 
-`createBackendCaller` returns a function used to describe the queries that should be revalidated. You can specify part of, or an entire query key to be revalidated
+`createBackendCaller` returns a function used to describe the queries that should be revalidated. You can specify part of, or an entire query key to be revalidated.
+
+If only part of the query key is provided, all query keys that start with the provided
+query key will be revalidated
+
+- an empty list will invalidate all queries
 
 > Note: if the entire query key is specified, the revalidation will happen in a single round trip
 
 > Note:
 > Any errors thrown by a query used in revalidation will not affect independent queries that were expected in the same response. When an
 > error on a revalidated query is encountered, we alert the `QueryClient` instance that the query is error'd
-
-> Note: `withInvalidation` enhances the response data you return in TRPC queries to include the data `TRPCInvalidator` will need to update the query cache
-
-
 
 ```typescript
 const withInvalidation = createInvalidator<typeof appRouter>({
