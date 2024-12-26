@@ -49,7 +49,7 @@ const withInvalidation = createInvalidator<typeof appRouter>({
 createPost: procedure.mutation(() => {
   //...
 
-  withInvalidation({
+  return withInvalidation({
     // normal response data, or omitted if nothing is being returned
     data: ...,
     // all queries that have been defined on the router are available
@@ -67,7 +67,7 @@ const withInvalidation = createInvalidator<typeof appRouter>()
 createPost: procedure.mutation(() => {
   //...
 
-  withInvalidation(
+  return withInvalidation(
     {
       getPosts: {
         data: [{...}, {...}, {...}],
