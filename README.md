@@ -1,7 +1,7 @@
 The goal of this library is:
 
 - server defined query invalidations
-- single round trip invalidations
+- single round trip invalidations supported
 - type safety
 - all with trpc + react-query
 
@@ -28,8 +28,9 @@ import { createBackendCaller } from "trpc-query-invalidator";
 export const withInvalidation = createInvalidator<typeof appRouter>();
 ```
 
-`createBackendCaller` returns a function used to describe the queries that should be revalidated. The arguments
-passed to the query called from the singleton will be inferred as the query key of the associated data the function outputs
+`createBackendCaller` returns a function used to describe the queries that should be revalidated. You can specify part of, or an entire query key to be revalidated
+
+> Note: if the entire query key is specified, the revalidation will happen in a single round trip
 
 > Note:
 > Any errors thrown by a query used in revalidation will not affect independent queries that were expected in the same response. When an
@@ -37,9 +38,7 @@ passed to the query called from the singleton will be inferred as the query key 
 
 > Note: `withInvalidation` enhances the response data you return in TRPC queries to include the data `TRPCInvalidator` will need to update the query cache
 
-Because the TRPC + react-query integration automatically generates query keys through the queries input, we can generate this query key on the server
-provided the inputs to the query.
-ex.
+
 
 ```typescript
 const withInvalidation = createInvalidator<typeof appRouter>({
@@ -53,7 +52,7 @@ createPost: procedure.mutation(() => {
     // normal response data, or omitted if nothing is being returned
     data: ...,
     // all queries that have been defined on the router are available
-    getPosts: [...argument list],
+    getPosts: [... partial query key],
   });
 });
 ```
